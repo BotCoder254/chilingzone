@@ -24,15 +24,22 @@ jobs:
           cache: 'npm'
           
       - name: Install Dependencies
-        run: npm ci
+        run: |
+          cd 8StreamApi
+          npm ci
         
       - name: Build
-        run: npm run build
+        run: |
+          cd 8StreamApi
+          npm run build
         env:
           NODE_ENV: production
+          TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
           
       - name: Check Types
-        run: npx tsc --noEmit
+        run: |
+          cd 8StreamApi
+          npx tsc --noEmit
         
       - name: Cache node modules
         uses: actions/cache@v3
@@ -53,10 +60,10 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
         
-      - name: Build Docker image
+      - name: Build and Push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: .
+          context: ./8StreamApi
           push: false
           tags: chilingzone:latest
           cache-from: type=gha
