@@ -60,11 +60,20 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
         
-      - name: Build and Push Docker image
+      - name: Build Docker image
         uses: docker/build-push-action@v5
         with:
           context: ./8StreamApi
+          file: ./8StreamApi/Dockerfile
           push: false
-          tags: chilingzone:latest
+          load: true
+          tags: chilingzone:test
           cache-from: type=gha
-          cache-to: type=gha,mode=max 
+          cache-to: type=gha,mode=max
+          
+      - name: Test Docker image
+        run: |
+          docker run --rm chilingzone:test npm test
+        env:
+          NODE_ENV: test
+          TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }} 
