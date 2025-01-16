@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- Background Circle with Glow -->
+    <filter id="glow">
+        <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+        <feMerge>
+            <feMergeNode in="coloredBlur"/>
+            <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+    </filter>
+    
+    <!-- Main Circle -->
+    <circle cx="100" cy="100" r="90" fill="url(#gradient)" filter="url(#glow)"/>
+    
+    <!-- Film Reel Details -->
+    <g opacity="0.8">
+        <circle cx="100" cy="100" r="85" stroke="white" stroke-width="2" stroke-dasharray="4 4" fill="none">
+            <animate attributeName="stroke-dashoffset" from="0" to="100" dur="10s" repeatCount="indefinite"/>
+        </circle>
+    </g>
+    
+    <!-- Play Button Triangle -->
+    <path d="M135 100L80 130L80 70L135 100Z" fill="white">
+        <animate attributeName="opacity" values="0.8;1;0.8" dur="2s" repeatCount="indefinite"/>
+    </path>
+    
+    <!-- Text with Gradient -->
+    <text x="100" y="160" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="url(#textGradient)" text-anchor="middle" filter="url(#glow)">ChilingZone</text>
+    
+    <!-- Gradients -->
+    <defs>
+        <linearGradient id="gradient" x1="0" y1="0" x2="200" y2="200" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" style="stop-color:#3B82F6"/>
+            <stop offset="100%" style="stop-color:#1D4ED8"/>
+            <animate attributeName="x1" values="0;200;0" dur="10s" repeatCount="indefinite"/>
+            <animate attributeName="y1" values="0;200;0" dur="10s" repeatCount="indefinite"/>
+        </linearGradient>
+        
+        <linearGradient id="textGradient" x1="0" y1="0" x2="200" y2="0">
+            <stop offset="0%" style="stop-color:#ffffff"/>
+            <stop offset="100%" style="stop-color:#e2e8f0"/>
+        </linearGradient>
+    </defs>
+</svg> 

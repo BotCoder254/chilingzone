@@ -1,0 +1,219 @@
+<!-- Video Player Component -->
+<div class="video-player-section">
+    <!-- Loading Indicator -->
+    <div id="loadingIndicator" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="relative">
+            <div class="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+            <div class="mt-4 text-white text-center">Loading stream...</div>
+        </div>
+    </div>
+
+    <!-- Video Container -->
+    <div class="video-container mb-6">
+        <video id="videoPlayer" class="rounded-lg" controls crossorigin="anonymous" poster="<%= movie.poster %>">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+
+    <!-- Controls -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <% if (streamingLinks && streamingLinks.length > 0) { %>
+            <% streamingLinks.forEach((link, index) => { %>
+                <div class="flex flex-col gap-2">
+                    <button onclick="playStream('<%= link.url %>', '<%= link.quality %>')" 
+                            class="flex items-center justify-between px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors">
+                        <span class="flex items-center">
+                            <i class="fas fa-closed-captioning mr-2"></i>
+                            <%= link.language %>
+                        </span>
+                        <span class="bg-blue-600 px-2 py-1 rounded text-xs">
+                            <%= link.quality %>
+                        </span>
+                    </button>
+                    <button onclick="downloadStream('<%= link.url %>', '<%= movie.title %>', '<%= link.quality %>')"
+                            class="flex items-center justify-center px-4 py-2 bg-green-600 hover:bg-green-700 rounded-lg transition-colors">
+                        <i class="fas fa-download mr-2"></i>Download
+                    </button>
+                </div>
+            <% }) %>
+        <% } %>
+    </div>
+</div>
+
+<!-- HLS.js Player Script -->
+<script>
+    let hls;
+    let currentQuality = 'auto';
+    
+    function showLoading() {
+        document.getElementById('loadingIndicator').classList.remove('hidden');
+    }
+    
+    function hideLoading() {
+        document.getElementById('loadingIndicator').classList.add('hidden');
+    }
+    
+    function initPlayer(video) {
+        if (hls) {
+            hls.destroy();
+        }
+        
+        if (Hls.isSupported()) {
+            hls = new Hls({
+                maxBufferLength: 30,
+                maxMaxBufferLength: 600,
+                maxBufferSize: 60*1000*1000,
+                maxBufferHole: 0.5,
+                lowLatencyMode: true,
+                debug: false,
+                autoStartLoad: true,
+                startLevel: -1, // Auto quality selection
+            });
+            
+            return hls;
+        }
+        return null;
+    }
+    
+    function handleHlsError(event, data) {
+        if (data.fatal) {
+            switch (data.type) {
+                case Hls.ErrorTypes.NETWORK_ERROR:
+                    console.error('Network error, trying to recover...');
+                    hls.startLoad();
+                    break;
+                case Hls.ErrorTypes.MEDIA_ERROR:
+                    console.error('Media error, trying to recover...');
+                    hls.recoverMediaError();
+                    break;
+                default:
+                    console.error('Fatal error, destroying player...');
+                    hls.destroy();
+                    break;
+            }
+        }
+        hideLoading();
+    }
+
+    async function playStream(url, quality) {
+        showLoading();
+        const video = document.getElementById('videoPlayer');
+        currentQuality = quality;
+        
+        if (Hls.isSupported()) {
+            const player = initPlayer(video);
+            if (player) {
+                player.attachMedia(video);
+                player.on(Hls.Events.MEDIA_ATTACHED, function () {
+                    player.loadSource(url);
+                });
+                
+                player.on(Hls.Events.ERROR, handleHlsError);
+                
+                player.on(Hls.Events.MANIFEST_PARSED, function(event, data) {
+                    // Auto-select highest quality
+                    const availableLevels = data.levels;
+                    const highestQuality = availableLevels.length - 1;
+                    player.currentLevel = highestQuality;
+                    
+                    video.play().catch(function(error) {
+                        console.log("Play failed:", error);
+                    });
+                    hideLoading();
+                });
+
+                // Handle quality switching
+                player.on(Hls.Events.LEVEL_SWITCHED, function(event, data) {
+                    console.log('Quality changed to:', data.level);
+                });
+            }
+        }
+        // For browsers with native HLS support (Safari)
+        else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+            video.src = url;
+            video.addEventListener('loadedmetadata', function() {
+                video.play().catch(function(error) {
+                    console.log("Play failed:", error);
+                });
+                hideLoading();
+            });
+        } else {
+            console.error('HLS is not supported in this browser');
+            hideLoading();
+        }
+    }
+
+    async function downloadStream(url, title, quality) {
+        try {
+            showLoading();
+            
+            // Create a download progress element
+            const progressDiv = document.createElement('div');
+            progressDiv.className = 'fixed bottom-4 right-4 bg-gray-800 p-4 rounded-lg shadow-lg z-50';
+            progressDiv.innerHTML = `
+                <div class="flex items-center gap-4">
+                    <div class="animate-spin rounded-full h-8 w-8 border-4 border-blue-500 border-t-transparent"></div>
+                    <div>
+                        <div class="font-semibold">Downloading ${title}</div>
+                        <div class="text-sm text-gray-400">Please wait...</div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(progressDiv);
+
+            // Send download request to server
+            const response = await fetch('/api/v1/download', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    url,
+                    title,
+                    quality
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error('Download failed');
+            }
+
+            const blob = await response.blob();
+            const downloadUrl = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = downloadUrl;
+            a.download = `${title} [${quality}].mp4`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(downloadUrl);
+            document.body.removeChild(a);
+            
+            // Update progress element to show completion
+            progressDiv.innerHTML = `
+                <div class="flex items-center gap-4">
+                    <i class="fas fa-check-circle text-green-500 text-2xl"></i>
+                    <div>
+                        <div class="font-semibold">Download Complete</div>
+                        <div class="text-sm text-gray-400">${title}</div>
+                    </div>
+                </div>
+            `;
+            setTimeout(() => {
+                document.body.removeChild(progressDiv);
+            }, 3000);
+        } catch (error) {
+            console.error('Download failed:', error);
+            alert('Download failed. Please try again.');
+        } finally {
+            hideLoading();
+        }
+    }
+
+    // Auto-play first stream when available
+    document.addEventListener('DOMContentLoaded', function() {
+        const streamingLinks = <%- JSON.stringify(streamingLinks || []) %>;
+        if (streamingLinks.length > 0) {
+            playStream(streamingLinks[0].url, streamingLinks[0].quality);
+        }
+    });
+</script> 

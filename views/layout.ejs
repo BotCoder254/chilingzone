@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chillzone - Watch Movies Online</title>
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body {
+            background-color: #0f172a;
+            color: #e2e8f0;
+        }
+        .movie-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: 0.75rem;
+            background: #1e293b;
+            transition: transform 0.3s ease;
+        }
+        .movie-card:hover {
+            transform: translateY(-4px);
+        }
+        .movie-card .overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .movie-card:hover .overlay {
+            opacity: 1;
+        }
+        .movie-card .play-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        .movie-card:hover .play-button {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+        .movie-card .play-icon {
+            width: 3rem;
+            height: 3rem;
+            background: rgba(37, 99, 235, 0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            backdrop-filter: blur(4px);
+            box-shadow: 0 0 20px rgba(37, 99, 235, 0.5);
+            transition: transform 0.3s ease;
+        }
+        .movie-card:hover .play-icon {
+            transform: scale(1.1);
+        }
+        .movie-card .info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 1rem;
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        .movie-card:hover .info {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes fadeRight {
+            from { transform: translateX(-20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+        .animate-slide-up {
+            animation: slideUp 0.5s ease forwards;
+        }
+        .animate-fade-right {
+            animation: fadeRight 0.5s ease forwards;
+        }
+        .btn-primary {
+            background-color: rgba(37, 99, 235, 0.9);
+            color: white;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            background-color: rgba(29, 78, 216, 0.9);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+    <!-- Back Button (Only shown on movie detail pages) -->
+    <% if (path && path.startsWith('/movie/')) { %>
+        <button onclick="history.back()" class="fixed top-4 left-4 z-50 bg-gray-800/90 hover:bg-gray-700/90 text-white p-3 rounded-xl backdrop-blur-sm transition-all duration-300 hover:scale-105 group">
+            <i class="fas fa-arrow-left text-lg group-hover:-translate-x-1 transition-transform"></i>
+        </button>
+    <% } %>
+
+    <!-- Navigation (Hidden on movie detail pages) -->
+    <% if (!path || !path.startsWith('/movie/')) { %>
+        <nav class="sticky top-0 z-50 bg-gray-900/95 backdrop-blur-sm border-b border-gray-800/50">
+            <div class="max-w-7xl mx-auto px-4">
+                <div class="flex items-center justify-between h-16">
+                    <!-- Logo -->
+                    <a href="/" class="flex items-center gap-2 group">
+                        <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-400 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
+                            <i class="fas fa-play text-white text-lg ml-0.5"></i>
+                        </div>
+                        <span class="text-xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">MovieFlix</span>
+                    </a>
+
+                    <!-- Navigation Links -->
+                    <div class="hidden md:flex items-center gap-6">
+                        <a href="/movies" class="text-gray-300 hover:text-white transition-colors">Browse</a>
+                        <div class="relative group">
+                            <button class="text-gray-300 hover:text-white transition-colors flex items-center gap-1.5">
+                                Categories <i class="fas fa-chevron-down text-xs ml-1"></i>
+                            </button>
+                            <div class="absolute top-full left-0 mt-2 w-48 bg-gray-800/95 backdrop-blur-sm rounded-xl shadow-xl border border-gray-700/50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform origin-top scale-95 group-hover:scale-100">
+                                <div class="py-2">
+                                    <a href="/category/action" class="flex items-center gap-3 px-4 py-2 text-gray-300 hover:text-white hover:bg-gray-700/50 transition-colors">
+                                        <i class="fas fa-fire text-blue-500"></i>
+                                        Action
+                                    </a>
+                                    <a href="/category/adventure" class="flex items-center gap-3 px-4 py-2 text-gray-300 hover:text-white hover:bg-gray-700/50 transition-colors">
+                                        <i class="fas fa-compass text-blue-500"></i>
+                                        Adventure
+                                    </a>
+                                    <a href="/category/comedy" class="flex items-center gap-3 px-4 py-2 text-gray-300 hover:text-white hover:bg-gray-700/50 transition-colors">
+                                        <i class="fas fa-laugh text-blue-500"></i>
+                                        Comedy
+                                    </a>
+                                    <a href="/category/drama" class="flex items-center gap-3 px-4 py-2 text-gray-300 hover:text-white hover:bg-gray-700/50 transition-colors">
+                                        <i class="fas fa-theater-masks text-blue-500"></i>
+                                        Drama
+                                    </a>
+                                    <a href="/category/horror" class="flex items-center gap-3 px-4 py-2 text-gray-300 hover:text-white hover:bg-gray-700/50 transition-colors">
+                                        <i class="fas fa-ghost text-blue-500"></i>
+                                        Horror
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Search -->
+                    <div class="flex items-center gap-4">
+                        <form action="/search" method="GET" class="relative">
+                            <input type="text" name="q" placeholder="Search movies..." 
+                                   class="w-64 bg-gray-800/50 text-white placeholder-gray-400 rounded-xl px-4 py-2 pl-10 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all">
+                            <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                        </form>
+                    </div>
+
+                    <!-- Mobile Menu Button -->
+                    <button class="md:hidden bg-gray-800/50 text-gray-300 hover:text-white p-2 rounded-xl transition-colors" onclick="document.getElementById('mobileMenu').classList.toggle('hidden')">
+                        <i class="fas fa-bars text-lg"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile Menu -->
+            <div id="mobileMenu" class="md:hidden hidden bg-gray-800/95 backdrop-blur-sm border-t border-gray-700/50">
+                <div class="max-w-7xl mx-auto px-4 py-4 space-y-4">
+                    <a href="/movies" class="block text-gray-300 hover:text-white transition-colors py-2">Browse</a>
+                    <div class="space-y-2">
+                        <p class="text-gray-400 text-sm font-medium">Categories</p>
+                        <div class="grid grid-cols-2 gap-2">
+                            <a href="/category/action" class="flex items-center gap-2 text-gray-300 hover:text-white transition-colors py-2">
+                                <i class="fas fa-fire text-blue-500"></i>
+                                Action
+                            </a>
+                            <a href="/category/adventure" class="flex items-center gap-2 text-gray-300 hover:text-white transition-colors py-2">
+                                <i class="fas fa-compass text-blue-500"></i>
+                                Adventure
+                            </a>
+                            <a href="/category/comedy" class="flex items-center gap-2 text-gray-300 hover:text-white transition-colors py-2">
+                                <i class="fas fa-laugh text-blue-500"></i>
+                                Comedy
+                            </a>
+                            <a href="/category/drama" class="flex items-center gap-2 text-gray-300 hover:text-white transition-colors py-2">
+                                <i class="fas fa-theater-masks text-blue-500"></i>
+                                Drama
+                            </a>
+                            <a href="/category/horror" class="flex items-center gap-2 text-gray-300 hover:text-white transition-colors py-2">
+                                <i class="fas fa-ghost text-blue-500"></i>
+                                Horror
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    <% } %>
+
+    <!-- Main Content -->
+    <main class="flex-grow">
+        <%- body %>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900/50 border-t border-gray-800/50 py-8">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- About -->
+                <div class="space-y-4 animate-fade-in">
+                    <h3 class="text-lg font-semibold">About Chillzone</h3>
+                    <p class="text-gray-400">Your ultimate destination for streaming movies online. Watch your favorite films anytime, anywhere.</p>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="space-y-4 animate-fade-in" style="animation-delay: 100ms">
+                    <h3 class="text-lg font-semibold">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="/movies" class="text-gray-400 hover:text-white transition-colors">Browse Movies</a></li>
+                        <li><a href="/search" class="text-gray-400 hover:text-white transition-colors">Search</a></li>
+                    </ul>
+                </div>
+
+                <!-- Categories -->
+                <div class="space-y-4 animate-fade-in" style="animation-delay: 200ms">
+                    <h3 class="text-lg font-semibold">Categories</h3>
+                    <ul class="space-y-2">
+                        <li><a href="/category/action" class="text-gray-400 hover:text-white transition-colors">Action</a></li>
+                        <li><a href="/category/adventure" class="text-gray-400 hover:text-white transition-colors">Adventure</a></li>
+                        <li><a href="/category/comedy" class="text-gray-400 hover:text-white transition-colors">Comedy</a></li>
+                        <li><a href="/category/drama" class="text-gray-400 hover:text-white transition-colors">Drama</a></li>
+                        <li><a href="/category/horror" class="text-gray-400 hover:text-white transition-colors">Horror</a></li>
+                    </ul>
+                </div>
+
+                <!-- Social Media
+                <div class="space-y-4 animate-fade-in" style="animation-delay: 300ms">
+                    <h3 class="text-lg font-semibold">Social Media</h3>
+                    <ul class="space-y-2">
+                        <li><a href="https://www.facebook.com/yourpage" class="text-gray-400 hover:text-white transition-colors">Facebook</a></li>
+                        <li><a href="https://www.twitter.com/yourpage" class="text-gray-400 hover:text-white transition-colors">Twitter</a></li>
+                        <li><a href="https://www.instagram.com/yourpage" class="text-gray-400 hover:text-white transition-colors">Instagram</a></li>
+                    </ul>
+                </div> -->
+
+                <!-- Contact -->
+                <div class="space-y-4 animate-fade-in" style="animation-delay: 300ms">
+                    <h3 class="text-lg font-semibold">Contact Us</h3>
+                    <ul class="space-y-2">
+                        <li class="flex items-center gap-2 text-gray-400">
+                            <i class="fas fa-envelope"></i>
+                            telvivaztelvin@gmail.com
+
+                            samueldevp@gmail.com
+
+                        </li>
+                        <li class="flex items-center gap-2 text-gray-400">
+                            <i class="fas fa-phone"></i>
+                            +254 792 052 669
+                            +234 906 072 6213
+                        </li>
+                        <li class="flex items-center gap-2 text-gray-400">
+                            <i class="fas fa-map-marker-alt"></i>
+                           Nairobi, Kenya
+                           Lagos, Nigeria
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Copyright -->
+            <div class="mt-8 pt-8 border-t border-gray-800/50 text-center text-gray-400">
+                <p>&copy; 2025 Chillzone. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html> 

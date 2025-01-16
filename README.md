@@ -1,16 +1,90 @@
+# ChilingZone 🎬
 
-![8-stream-high-resolution-logo-transparent](https://github.com/himanshu8443/HayasakaStream/assets/99420590/813cca3a-a3c3-4f40-8a79-df5b866edf68)
- - Api provides Movies/Series streaming links by IMDB IDs.
- - Most commonly provided languages - Hindi, English, Tamil, Telugu, Bengali.
+<div align="center">
 
-#  Documentation
-## Get media Info
-Provides information file and key which is used to get steram link.
- 
-**Endpoint** - `/api/v1/mediaInfo?id=tt1877830`
+<img src="public/images/logo.svg" alt="ChilingZone Logo" width="200"/>
 
-**Response** - 
+[![GitHub stars](https://img.shields.io/github/stars/BotCoder254/ChilingZone?style=for-the-badge)](https://github.com/BotCoder254/ChilingZone/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/BotCoder254/ChilingZone?style=for-the-badge)](https://github.com/BotCoder254/ChilingZone/network)
+[![GitHub issues](https://img.shields.io/github/issues/BotCoder254/ChilingZone?style=for-the-badge)](https://github.com/BotCoder254/ChilingZone/issues)
+[![GitHub license](https://img.shields.io/github/license/BotCoder254/ChilingZone?style=for-the-badge)](https://github.com/BotCoder254/ChilingZone/blob/main/LICENSE)
+
+<!-- [![GitHub Activity](https://activity-graph.herokuapp.com/graph?username=BotCoder254&theme=react-dark&hide_border=true)](https://github.com/BotCoder254) -->
+
+[![GitHub Streak](https://github-readme-streak-stats.herokuapp.com/?user=BotCoder254&theme=dark)](https://github.com/BotCoder254)
+
+🎥 A modern streaming platform that provides Movies streaming links by IMDB IDs.
+
+[View Demo](https://chilingzone.vercel.app) · [Report Bug](https://github.com/BotCoder254/ChilingZone/issues) · [Request Feature](https://github.com/BotCoder254/ChilingZone/issues)
+
+</div>
+
+## ✨ Features
+
+- 🎬 Stream Movies in Multiple Languages
+- 🌐 Support for Multiple Video Qualities
+- 🎯 Advanced Search Functionality
+- 📱 Responsive Design
+- 🚀 Fast Loading Times
+- 🎨 Modern UI/UX
+- 🔍 IMDB Integration
+- 📺 HLS Stream Support
+
+<!-- ## 🎯 Screenshots
+
+<div align="center">
+<img src="screenshots/home.png" alt="Home Page" width="400"/>
+<img src="screenshots/movie.png" alt="Movie Page" width="400"/>
+<img src="screenshots/search.png" alt="Search Page" width="400"/>
+<img src="screenshots/category.png" alt="Category Page" width="400"/>
+</div> -->
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js 16+
+- npm or yarn
+- Docker (optional)
+
+### Installation
+
+1. Clone the repository
+```bash
+git clone https://github.com/BotCoder254/ChilingZone.git
 ```
+
+2. Install dependencies
+```bash
+cd ChilingZone
+npm install
+```
+
+3. Build and start the application
+```bash
+npm run build
+npm run start
+```
+
+### Docker Installation
+
+```bash
+# Build the image
+docker build -t movieflix .
+
+# Run the container
+docker run -p 3000:3000 -it -d movieflix
+```
+
+## 📖 API Documentation
+
+### Get Media Info
+Provides information file and key for streaming.
+
+**Endpoint**: `/api/v1/mediaInfo?id=tt1877830`
+
+**Response**:
+```json
 {
     "success": true,
     "data": {
@@ -18,130 +92,85 @@ Provides information file and key which is used to get steram link.
             {
                 "title": "Hindi",
                 "id": "24b8c045e7fcd28fb2ee654de75a5771",
-                "file": "~0ALZ3tMP71lNTMdSBfbldjRRjLuTyceuX41C5TkTXfD5VWq-lExFCZWoHOr3rx1BLk-Ry-BI+1M3g7u6Q0QsROSCWkIPm+0O8vejnftI6c$ikYspRLC6glMxcYFec8ILFBLrTT4uOs8fE4dx3aDu-t88g5aAHsTgfyOLYS0QyxEAmJqa5ryEoOLK4jb3zPPMjxWqtE9-TYbnE9UI$OJxw7N1H5+yiCSPmxCp4DECTluWeWV9j-g5+9up7XkQ0Q-rF6yEeqtNbUIqJohUOXhWet7aGgLwzSd7RldFBs+8hfQ!"
+                "file": "..."
             },
             {
                 "title": "English",
                 "id": "fd93fd0a7fc57f1e0c9c54110322a05f",
-                "file": "~GTE1z8T8rAcuWI3QaGEKR0oNFlOEr6grKv-lGchVBqFrFXq0BU5tJswuynqZcHf8IB8hXkLSozWK1LsrFKn9UFuo1FsNYq4obBiEA$SKYEqXZ6iKR4PB6wnPpkU$6ZI5pRHPJZIgJAGNKv+RbbDRCGc50wFuraeCa8Mn9Q114FD1Kk1XBBHeafA-yqYcRoyFmLoOjW8jpaT-qMEdVwrPqAjIx3K40BU1piKi3wYFA1CTLSERXQRUUYMB9847FkbOfhlHxchONfrwcja0+NM1-hU$+$8ARCprBKD8R77JzcY!"
-            },
-            {
-                "title": "Bengali",
-                "id": "514592bb6a9ddefadbac9a0a3d5853d0",
-                "file": "~8i-Mu-WONoEdJ9whQe+Ldow7qCqtzIq7BVxxzRem-s+-SF5sgmF3n8Q1g$ZUztNliWstIDp+mAjzbZyZJvBpfhcTLc4XdEsjPYOVJon193lL+dlYNX1yfJIm1TMMlVEl+illL+C3yG-L41UDM3N-Ovju6q+qbKJ6fFzDcEiaAQ4r8AEPfiAir3qNz3XdS+CELa4-TZp$MFGJ89wW0-hEgC1SsvpeT8xwztjMTfd6oonUA4qJAqXXDGGnwZWB$OXFxy9q4sezs3yCEtSp$eYxEXdyWvzZBp0mT-baIkot7$s!"
-            },
-            {
-                "title": "Tamil",
-                "id": "38d4c32d7e29000d506ce2f8f6270baf",
-                "file": "~5A+LJm$L$KlNx7kfKAT5j+H4A9ISTI$hdS8qx8DVIpzz3$QvThc1r8oj-ZwgvDk-4R$dikyvfN1vhcmxQ5LaxMcXOgd9M5$0xST3-NHirwI0iCWN0HevWfmK-GyRWHFbaN7+xjblvFkgjL9EmHnh$D8Avci1RYSJfN0LuqqoJB3nV0+hFGys4KYUMlnJhLWbl1k5R3AMNOr-sLG8wCheNemp74hcSk4+IVXnjCu$K5StEbejCNb$1yXPkjF6ucAbV7ZZp-Rr+wZagGSwA+sGLTmAk-Uk3R1HgyAmO$JVsQM!"
-            },
-            {
-                "title": "Telugu",
-                "id": "693e0bcfca53a67473f24b20e72bbcdc",
-                "file": "~MxqPD98luqAA3ynyU6pk-AeOQl$WkokFfUUWNv9JODWbaQ7FI6YXr6Jt7$HANlffMb3JMFyzALQRHlVyxwwLlpLrLKMmgZr-ACmNldEysL15fwab$-4WFMSPTqNyw56Np4LYZ7kVsjZexZz0rk0WK+iNAn6en63+CM1ZSFpAWMeR5Ync5rZ-JfjINucVzaobO75PAaax7XbzbTFsYfPlkCMQHBjU39vfjwg3Px9iv7DKT1kayBWxqyqEgx1jILeb48eqhhtq8JuhPYqatZ1FqfRtz8IYUOx1mdBokw9dutY!"
+                "file": "..."
             }
         ],
-        "key": "yZBAPr58y7RIOpj4K$VhgXhXBTHz-bmW++CaWFtWPFaIMUpqmVCnuRc0IXnytMAf"
+        "key": "..."
     }
 }
 ```
 
-**Try** - [try](https://8-stream-api.vercel.app/api/v1/mediaInfo?id=tt1877830)
+### Get Stream
+Provides the streaming link.
 
-|Query|Description|Required|Method
-|--|--|--|--
-|id|IMDB ID of movie/series|True|Get
+**Endpoint**: `/api/v1/getStream`
+**Method**: POST
 
-## Get getSeasonList
-Provides available season, episodes and language info
-
-**Endpoint** - `/api/v1/getSeasonList?id=tt11737520`
-
-**Response** - 
-```bash
-{
-    "success": true,
-    "data": {
-        "seasons": [
-            {
-                "season": "Season 1",
-                "totalEpisodes": 8,
-                "lang": [
-                    "Hindi",
-                    "English"
-                ]
-            }
-        ],
-        "type": "tv"
-    }
-}
+**Example**:
+```javascript
+fetch('/api/v1/getStream', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+        file: '~8i-Mu-WONoEdJ9whQe+Ldow...',
+        key: 'rcbeUV3KoCw-dSFJ-vN$-JwI4OXlCmOaAx05HkWyclbx46SNcazmpYmnFTXoNjo'
+    })
+})
 ```
 
-**Try** -  [try](https://8-stream-api.vercel.app/api/v1/getSeasonList?id=tt11737520)
+## 🌟 Deployment
 
-|Query|Description  | required
-|--|--| --|
-|id|IMDB ID of movie/series  |true
+### Deploy to Vercel
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FBotCoder254%2FChilingZone)
 
+### Deploy to Render
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/BotCoder254/ChilingZone)
 
-## Get Stream
-Provides stream link.
-**Endpoint** - `/api/v1/getStream`
+## 📊 Project Stats
 
-**Method** - POST
+<div align="center">
 
-**Response** - 
-```bash
-{
-  "success": true,
-  "data": {
-    "link": "https://i-arch-400.friness-cherlormur-i-275.site/stream2/i-arch-400/2e69c15cc905832c1f9f8d93d594b928/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT2lVbZJzTX1kMNRVQw0keNdnWqlVeZdVW65ERNFjWUVkeNpmRr5EVVd3TUFVP:1705469597:103.74.72.126:069d121bf24da6b6e19060020f57bfcd8812645bc1f289e36d9cc5381866a015/index.m3u8"
-  }
-}
-```
+[![Contributors](https://img.shields.io/github/contributors/BotCoder254/ChilingZone?style=for-the-badge)](https://github.com/BotCoder254/ChilingZone/graphs/contributors)
+[![Last Commit](https://img.shields.io/github/last-commit/BotCoder254/ChilingZone?style=for-the-badge)](https://github.com/BotCoder254/ChilingZone/commits/main)
+[![Repo Size](https://img.shields.io/github/repo-size/BotCoder254/ChilingZone?style=for-the-badge)](https://github.com/BotCoder254/ChilingZone)
+[![Code Size](https://img.shields.io/github/languages/code-size/BotCoder254/ChilingZone?style=for-the-badge)](https://github.com/BotCoder254/ChilingZone)
 
-|Body|Description  | required
-|--|--| --|
-file|get it form mediaInfo | true
-key |get it form mediaInfo |true
+[![Top Languages](https://github-readme-stats.vercel.app/api/top-langs/?username=BotCoder254&layout=compact&theme=dark)](https://github.com/BotCoder254)
 
-**Example**
-```bash
-fetch('https://example.com/api/v1/getStream',
- { method: 'POST', headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify(
-{ file: '~8i-Mu-WONoEdJ9whQe+Ldow...', 
- key: 'rcbeUV3KoCw-dSFJ-vN$-JwI4OXlCmOaAx05HkWyclbx46SNcazmpYmnFTXoNjo' }
-)}) 
- .then(response => response.json()) 
- .then(data =>  console.log(data)) 
- .catch(error =>  console.error(error));
-```
+</div>
 
-# Installation
-  ```
-   git clone https://github.com/himanshu8443/8StreamApi.git
-  ```
+## 👥 Contributors
 
- ```
-  cd 8StreamApi
-```
- ### node
-  ```
-   npm install
-   npm run build
-   npm run start
-```
-   
-###  docker
-```
-docker build -t 8streamapi .
-```
-```
-docker run -p 3000:3000 -it -d 8streamapi
-```
+<div align="center">
+<a href="https://github.com/BotCoder254">
+  <img src="https://github.com/BotCoder254.png" width="100px" alt="BotCoder254" style="border-radius: 50%;"/>
+</a>
+<a href="https://github.com/SamuelDevp">
+  <img src="https://github.com/SamuelDevp.png" width="100px" alt="SamuelDevp" style="border-radius: 50%;"/>
+</a>
 
-# Deploy
-## Vercel - [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fhimanshu8443%2F8StreamApi)
-Note- vercel free tier serverless response time limit is 10 sec and will stop if took longer
-## Render - [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/himanshu8443/8StreamApi)
+**Developed by [@BotCoder254](https://github.com/BotCoder254)**  
+**Contributed by [@SamuelDevp](https://github.com/SamuelDevp)**
+
+</div>
+
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- [TMDB](https://www.themoviedb.org/) for movie data
+- [HLS.js](https://github.com/video-dev/hls.js/) for video streaming
+- All contributors who helped make this project better
+
+<div align="center">
+
+Made with ❤️ by [BotCoder254](https://github.com/BotCoder254) & [SamuelDevp](https://github.com/SamuelDevp)
+
+</div>

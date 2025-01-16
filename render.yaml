@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: 8streamapi
+    name: chilingzone
     env: docker
-    repo: https://github.com/himanshu8443/8StreamApi.git
+    repo: https://github.com/BotCoder254/ChilingZone.git
     branch: main

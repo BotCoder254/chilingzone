@@ -1,0 +1,110 @@
+<!-- Movies Header -->
+<div class="relative -mt-16">
+    <div class="absolute inset-0 bg-gradient-to-b from-gray-900 to-gray-900/50"></div>
+    <div class="relative max-w-7xl mx-auto px-4 py-16 text-center">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4 animate-fade-in">Movies Collection</h1>
+        <p class="text-xl text-gray-300 max-w-2xl mx-auto animate-fade-in" style="animation-delay: 100ms">
+            Discover our extensive collection of movies. From latest releases to timeless classics, find your next favorite film.
+        </p>
+    </div>
+</div>
+
+<!-- Filter Section -->
+<div class="max-w-7xl mx-auto px-4 py-8">
+    <div class="bg-gray-800/50 rounded-xl p-6 backdrop-blur-sm animate-slide-up">
+        <form action="/movies" method="GET" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Search -->
+            <div class="relative">
+                <input type="text" name="search" value="<%= search %>" placeholder="Search movies..." 
+                       class="w-full bg-gray-900/50 text-white placeholder-gray-400 rounded-xl px-4 py-3 pl-10 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all">
+                <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+            </div>
+
+            <!-- Genre Filter -->
+            <div class="relative">
+                <select name="genre" class="w-full bg-gray-900/50 text-white rounded-xl px-4 py-3 appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all">
+                    <option value="" <%= !genre ? 'selected' : '' %>>All Genres</option>
+                    <option value="action" <%= genre === 'action' ? 'selected' : '' %>>Action</option>
+                    <option value="comedy" <%= genre === 'comedy' ? 'selected' : '' %>>Comedy</option>
+                    <option value="drama" <%= genre === 'drama' ? 'selected' : '' %>>Drama</option>
+                    <option value="horror" <%= genre === 'horror' ? 'selected' : '' %>>Horror</option>
+                    <option value="sci-fi" <%= genre === 'sci-fi' ? 'selected' : '' %>>Sci-Fi</option>
+                </select>
+                <i class="fas fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
+            </div>
+
+            <!-- Sort Filter -->
+            <div class="relative">
+                <select name="sort" class="w-full bg-gray-900/50 text-white rounded-xl px-4 py-3 appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all">
+                    <option value="popular" <%= sort === 'popular' ? 'selected' : '' %>>Most Popular</option>
+                    <option value="latest" <%= sort === 'latest' ? 'selected' : '' %>>Latest Releases</option>
+                    <option value="rating" <%= sort === 'rating' ? 'selected' : '' %>>Top Rated</option>
+                </select>
+                <i class="fas fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Movies Grid -->
+<div class="max-w-7xl mx-auto px-4 py-8">
+    <% if (movies && movies.length > 0) { %>
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 animate-slide-up" style="animation-delay: 200ms">
+            <% movies.forEach(movie => { %>
+                <a href="/movie/<%= movie.imdbId %>" class="movie-card aspect-[2/3]">
+                    <img src="<%= movie.poster %>" alt="<%= movie.title %>" class="w-full h-full object-cover">
+                    <div class="overlay">
+                        <div class="play-button">
+                            <div class="play-icon">
+                                <i class="fas fa-play text-lg ml-0.5"></i>
+                            </div>
+                        </div>
+                        <div class="info">
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="bg-blue-600/90 text-white px-2.5 py-1 rounded-lg text-sm font-medium backdrop-blur-sm">
+                                    <i class="fas fa-star text-yellow-400 mr-1.5"></i><%= movie.rating %>
+                                </span>
+                                <span class="text-white/90 text-sm font-medium"><%= movie.year %></span>
+                            </div>
+                        </div>
+                    </div>
+                    <h3 class="mt-3 font-medium text-white/90 truncate group-hover:text-blue-400 transition-colors"><%= movie.title %></h3>
+                </a>
+            <% }); %>
+        </div>
+
+        <!-- Pagination -->
+        <% if (totalPages > 1) { %>
+            <div class="flex justify-center items-center gap-4 mt-12 animate-slide-up" style="animation-delay: 300ms">
+                <% if (page > 1) { %>
+                    <a href="/movies?page=<%= page - 1 %>&search=<%= search %>&genre=<%= genre %>&sort=<%= sort %>" 
+                       class="btn-primary px-4 py-2 rounded-xl">
+                        <i class="fas fa-chevron-left mr-2"></i>Previous
+                    </a>
+                <% } %>
+                
+                <span class="text-gray-400">Page <%= page %> of <%= totalPages %></span>
+                
+                <% if (page < totalPages) { %>
+                    <a href="/movies?page=<%= page + 1 %>&search=<%= search %>&genre=<%= genre %>&sort=<%= sort %>" 
+                       class="btn-primary px-4 py-2 rounded-xl">
+                        Next<i class="fas fa-chevron-right ml-2"></i>
+                    </a>
+                <% } %>
+            </div>
+        <% } %>
+    <% } else { %>
+        <div class="text-center py-12 animate-fade-in">
+            <div class="text-gray-400 mb-4">
+                <i class="fas fa-film text-6xl mb-4"></i>
+                <h3 class="text-xl font-semibold">No Movies Found</h3>
+            </div>
+            <p class="text-gray-500 mb-8">
+                We couldn't find any movies matching your criteria. Try adjusting your filters or search terms.
+            </p>
+            <a href="/movies" class="btn-primary px-6 py-3 rounded-xl">
+                <i class="fas fa-sync-alt mr-2"></i>Reset Filters
+            </a>
+        </div>
+    <% } %>
+</div>
